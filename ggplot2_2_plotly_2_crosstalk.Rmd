@@ -1,0 +1,73 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+plot(mtcars$wt, mtcars$mpg, main="Weight VS Mpg", 
+      xlab="Weight", ylab="MPG", pch=16)
+abline(lm(mtcars$mpg~mtcars$wt), col="green") 
+lines(lowess(mtcars$wt,mtcars$mpg), col="blue")
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+Round 1 - ggplot2
+
+https://ggplot2.tidyverse.org/
+
+```{r}
+library(ggplot2)
+
+ggplot(mtcars) +
+           geom_point(aes(wt, mpg, color = cyl))
+```
+
+
+```{r}
+ggplot(mtcars) +
+           geom_point(aes(hp, mpg, color = cyl))
+```
+
+Round2 - Plotly
+
+https://plot.ly/r/
+
+```{r}
+library(plotly)
+
+ggplotly(ggplot(mtcars) +
+  geom_point(aes(wt, mpg, color = cyl)))
+```
+
+
+```{r}
+ggplotly(ggplot(mtcars) +
+  geom_point(aes(hp, mpg, color = cyl)))
+```
+
+
+Round3 - Enter Crosstalk
+
+https://rstudio.github.io/crosstalk/index.html
+
+```{r}
+library(crosstalk)
+shared_mtcars <- SharedData$new(mtcars)
+
+bscols(
+  filter_slider("hp", "Horsepower", shared_mtcars, ~ hp, width = "100%"),
+  ggplotly(ggplot(shared_mtcars) +
+             geom_point(aes(wt, mpg, color = cyl))),
+  
+  ggplotly(ggplot(shared_mtcars) +
+             geom_point(aes(hp, mpg, color = cyl)))
+)
+```
+
+
+
